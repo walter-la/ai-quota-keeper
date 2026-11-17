@@ -1,0 +1,19 @@
+# 複製為 config.toml 後修改；未提供的欄位使用程式內預設值。
+timezone = "Asia/Taipei"
+triggers = ["07:00", "12:30", "18:00"]
+tolerance_seconds = 120       # 超過此延遲視為 missed，不補跑
+cli_timeout_seconds = 60
+
+[codex]
+model = "gpt-6-luna"
+effort = "none"               # 不支援時自動退回 low
+prompt = "hi"
+
+[claude]
+model = "claude-haiku-5-5"
+effort = "low"
+prompt = "hi"
+
+[redemption]
+# 只有 `run-scheduled`（systemd 呼叫）在 enabled=true 時才可能真實兌換
+enabled = true

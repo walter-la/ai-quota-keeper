@@ -1,0 +1,15 @@
+[Unit]
+Description=AI Quota Keeper 固定排程（台灣時間 07:00 / 12:30 / 18:00）
+
+[Timer]
+OnCalendar=*-*-* 07:00:00 Asia/Taipei
+OnCalendar=*-*-* 12:30:00 Asia/Taipei
+OnCalendar=*-*-* 18:00:00 Asia/Taipei
+# 不補跑錯過的排程
+Persistent=false
+AccuracySec=1s
+RandomizedDelaySec=0
+Unit=ai-quota-keeper.service
+
+[Install]
+WantedBy=timers.target

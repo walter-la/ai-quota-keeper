@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# 管理指令 wrapper：固定使用專案 venv。
+ROOT="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+exec "$ROOT/.venv/bin/python" -m ai_quota_keeper "$@"
