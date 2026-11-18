@@ -1,6 +1,6 @@
 # AI Quota Keeper
 
-在固定時間（預設台灣時間 **07:00 / 12:30 / 18:00**）各對 Codex CLI 與 Claude Code CLI 送出一次 `hi`，
+在固定時間（預設台灣時間 **07:00 / 12:30 / 18:00 / 23:30**）各對 Codex CLI 與 Claude Code CLI 送出一次 `hi`，
 讓 5 小時額度視窗按固定節奏開始計時；並在券即將於下一個排程前到期時，自動兌換 Codex 與 Claude 的 Reset 券。
 
 ## 需求

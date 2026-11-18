@@ -1,6 +1,6 @@
 # 複製為 config.toml 後修改；未提供的欄位使用程式內預設值。
 timezone = "Asia/Taipei"
-triggers = ["07:00", "12:30", "18:00"]
+triggers = ["07:00", "12:30", "18:00", "23:30"]
 tolerance_seconds = 120       # 超過此延遲視為 missed，不補跑
 cli_timeout_seconds = 60
 

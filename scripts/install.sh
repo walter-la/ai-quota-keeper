@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 安裝 systemd user timer。本腳本不會執行任何觸發或兌換，只負責部署與驗證。
+# 安裝 systemd user timer。重新啟動 timer 可能使 systemd 喚起服務；程式會依時間容許值判斷是否執行。
 set -euo pipefail
 ROOT="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
 UNIT_DIR="$HOME/.config/systemd/user"
@@ -15,15 +15,16 @@ for u in ai-quota-keeper.service ai-quota-keeper.timer; do
 done
 
 echo "== 驗證 OnCalendar =="
-for t in "07:00:00" "12:30:00" "18:00:00"; do
+for t in "07:00:00" "12:30:00" "18:00:00" "23:30:00"; do
   systemd-analyze calendar "*-*-* $t Asia/Taipei" | grep -E "Normalized|Next elapse|\(in UTC\)" | sed 's/^/  /'
 done
 systemd-analyze --user verify "$UNIT_DIR/ai-quota-keeper.service" "$UNIT_DIR/ai-quota-keeper.timer" || true
 
 systemctl --user daemon-reload
-systemctl --user enable --now ai-quota-keeper.timer
+systemctl --user enable ai-quota-keeper.timer
+systemctl --user restart ai-quota-keeper.timer
 echo "== timer 狀態 =="
 systemctl --user is-enabled ai-quota-keeper.timer
 systemctl --user is-active ai-quota-keeper.timer
 systemctl --user list-timers ai-quota-keeper.timer --no-pager
-echo "（安裝完成。未立即執行任何觸發/兌換；等待下一個排程時間。）"
+echo "（安裝完成。重新啟動 timer 後，請檢查服務紀錄及下一個排程時間。）"

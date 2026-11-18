@@ -4,7 +4,7 @@
 
 ## 為什麼需要
 Ubuntu 的 systemd user timer 已啟用，但 WSL2 在沒有任何 Windows 端程序連線時可能被自動停止（閒置回收），
-此時 Linux timer 無法在 07:00 / 12:30 / 18:00 準時觸發，且依需求 `Persistent=false` 不補跑。
+此時 Linux timer 無法在 07:00 / 12:30 / 18:00 / 23:30 準時觸發，且依需求 `Persistent=false` 不補跑。
 Windows Task Scheduler 可以在指定時間用 `wsl.exe` 喚起 WSL2 並執行同一個入口。
 
 ## 環境事實
@@ -18,7 +18,7 @@ Windows Task Scheduler 可以在指定時間用 `wsl.exe` 喚起 WSL2 並執行�
 
 ## 要建立的任務：三個觸發器（同一個 Task）
 - 任務名稱：`AI Quota Keeper`
-- 觸發器（每天）：**07:00**、**12:30**、**18:00**（本機時間 = 台北時間）
+- 觸發器（每天）：**07:00**、**12:30**、**18:00**、**23:30**（本機時間 = 台北時間）
 - 動作：啟動程式
   - Program：`C:\Windows\System32\wsl.exe`
   - Arguments：
@@ -36,7 +36,7 @@ Windows Task Scheduler 可以在指定時間用 `wsl.exe` 喚起 WSL2 並執行�
 ```powershell
 $action = New-ScheduledTaskAction -Execute "C:\Windows\System32\wsl.exe" `
   -Argument "-d <DISTRO> --user <USER> --cd <PROJECT_ROOT> -- <PROJECT_ROOT>/ai-quota-keeper run-scheduled"
-$triggers = "07:00","12:30","18:00" | ForEach-Object { New-ScheduledTaskTrigger -Daily -At $_ }
+$triggers = "07:00","12:30","18:00","23:30" | ForEach-Object { New-ScheduledTaskTrigger -Daily -At $_ }
 $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 5) -StartWhenAvailable:$false
 Register-ScheduledTask -TaskName "AI Quota Keeper" -Action $action -Trigger $triggers -Settings $settings
 ```

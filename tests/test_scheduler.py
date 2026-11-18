@@ -8,8 +8,8 @@ C = Config()
 T = (C.triggers, TZ)
 
 
-def test_triggers_are_taipei_0700_1230_1800():
-    assert [t.strftime("%H:%M") for t in C.triggers] == ["07:00", "12:30", "18:00"]
+def test_triggers_are_taipei_0700_1230_1800_2330():
+    assert [t.strftime("%H:%M") for t in C.triggers] == ["07:00", "12:30", "18:00", "23:30"]
 
 
 def test_next_0700_to_1230():
@@ -20,16 +20,20 @@ def test_next_1230_to_1800():
     assert next_trigger(tpe(2026, 11, 17, 12, 30), *T) == tpe(2026, 11, 17, 18, 0)
 
 
-def test_next_1800_to_next_day_0700():
-    assert next_trigger(tpe(2026, 11, 17, 18, 0), *T) == tpe(2026, 11, 18, 7, 0)
+def test_next_1800_to_2330():
+    assert next_trigger(tpe(2026, 11, 17, 18, 0), *T) == tpe(2026, 11, 17, 23, 30)
+
+
+def test_next_2330_to_next_day_0700():
+    assert next_trigger(tpe(2026, 11, 17, 23, 30), *T) == tpe(2026, 11, 18, 7, 0)
 
 
 def test_month_end():
-    assert next_trigger(tpe(2026, 11, 30, 18, 0), *T) == tpe(2026, 12, 1, 7, 0)
+    assert next_trigger(tpe(2026, 11, 30, 23, 30), *T) == tpe(2026, 12, 1, 7, 0)
 
 
 def test_year_end():
-    assert next_trigger(tpe(2026, 12, 31, 20, 0), *T) == tpe(2027, 1, 1, 7, 0)
+    assert next_trigger(tpe(2026, 12, 31, 23, 30), *T) == tpe(2027, 1, 1, 7, 0)
 
 
 def test_utc_conversion_not_12_00():
@@ -46,8 +50,8 @@ def test_boundary_exact_and_just_before():
     assert next_trigger(tpe(2026, 11, 17, 12, 29, 59), *T) == tpe(2026, 11, 17, 12, 30)
 
 
-def test_before_first_trigger_uses_yesterday_1800():
-    assert previous_trigger(tpe(2026, 11, 17, 3, 0), *T) == tpe(2026, 11, 16, 18, 0)
+def test_before_first_trigger_uses_yesterday_2330():
+    assert previous_trigger(tpe(2026, 11, 17, 3, 0), *T) == tpe(2026, 11, 16, 23, 30)
 
 
 def test_tolerance_and_missed():
@@ -59,3 +63,10 @@ def test_tolerance_and_missed():
 
 def test_slot_id_stable():
     assert slot_id(tpe(2026, 11, 17, 7, 0)) == "2026-11-17T07:00+08:00"
+
+
+def test_2330_boundary_and_tolerance():
+    assert previous_trigger(tpe(2026, 11, 17, 23, 29, 59), *T) == tpe(2026, 11, 17, 18, 0)
+    assert next_trigger(tpe(2026, 11, 17, 23, 29, 59), *T) == tpe(2026, 11, 17, 23, 30)
+    slot, ok = current_slot(tpe(2026, 11, 17, 23, 31), C.triggers, TZ, 120)
+    assert ok and slot == tpe(2026, 11, 17, 23, 30)

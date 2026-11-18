@@ -27,9 +27,9 @@ def test_expires_exactly_at_next_redeem():
     assert dec([credit(exp=NEXT1800)])[0].redeem
 
 
-def test_1800_to_tomorrow_0700_cases():
-    now, nxt = tpe(2026, 11, 17, 18, 0), tpe(2026, 11, 18, 7, 0)
-    assert dec([credit(exp=tpe(2026, 11, 17, 19, 0))], now, nxt)[0].redeem
+def test_2330_to_tomorrow_0700_cases():
+    now, nxt = tpe(2026, 11, 17, 23, 30), tpe(2026, 11, 18, 7, 0)
+    assert dec([credit(exp=tpe(2026, 11, 18, 1, 0))], now, nxt)[0].redeem
     assert not dec([credit(exp=tpe(2026, 11, 18, 9, 0))], now, nxt)[0].redeem
     now2, nxt2 = tpe(2026, 11, 18, 7, 0), tpe(2026, 11, 18, 12, 30)
     assert dec([credit(exp=tpe(2026, 11, 18, 9, 0))], now2, nxt2)[0].redeem
@@ -88,8 +88,8 @@ def test_next_redemption_point():
     c = Config()
     step = lambda t: next_trigger(t, c.triggers, TZ)
     s = snap([credit(exp=tpe(2026, 11, 30, 20, 0))])
-    # 11/30 20:00 到期 → 最後可兌換排程點為 11/30 18:00（其下一次 12/01 07:00 已晚於到期）
+    # 11/30 20:00 到期 → 最後可兌換排程點為 11/30 18:00（其下一次 11/30 23:30 已晚於到期）
     assert next_redemption_point(s, tpe(2026, 11, 17, 3, 0), step) == tpe(2026, 11, 30, 18, 0)
     s2 = snap([credit(exp=tpe(2026, 12, 1, 4, 0))])
-    assert next_redemption_point(s2, tpe(2026, 11, 17, 3, 0), step) == tpe(2026, 11, 30, 18, 0)
+    assert next_redemption_point(s2, tpe(2026, 11, 17, 3, 0), step) == tpe(2026, 11, 30, 23, 30)
     assert next_redemption_point(snap([credit(exp=None)]), tpe(2026, 11, 17, 3, 0), step) is None

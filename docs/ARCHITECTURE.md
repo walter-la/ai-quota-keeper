@@ -1,7 +1,7 @@
 # 架構
 
 ```
-systemd timer (07:00/12:30/18:00 Asia/Taipei) ─┐
+systemd timer (07:00/12:30/18:00/23:30 Asia/Taipei) ─┐
 Windows Task Scheduler（選用備援）─────────────┴─> ai-quota-keeper run-scheduled
                                                       │
    orchestrator.run_scheduled

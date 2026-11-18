@@ -21,7 +21,7 @@ class CliSpec:
 class Config:
     root: Path = PROJECT_ROOT
     timezone: str = "Asia/Taipei"
-    triggers: tuple[time, ...] = (time(7, 0), time(12, 30), time(18, 0))
+    triggers: tuple[time, ...] = (time(7, 0), time(12, 30), time(18, 0), time(23, 30))
     tolerance_seconds: int = 120
     cli_timeout_seconds: int = 60
     codex: CliSpec = CliSpec("gpt-6-luna", "none")
